@@ -1,0 +1,4 @@
+CREATE TABLE car_model (model_id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, make text NOT NULL, model_name text NOT NULL, model_year integer CHECK(model_year BETWEEN 1886 AND 2100), msrp numeric(12,2) CHECK(msrp>=0), UNIQUE(make,model_name,model_year));
+CREATE TABLE vehicle (vin char(17) PRIMARY KEY, model_id bigint NOT NULL REFERENCES car_model(model_id), color text, mileage integer NOT NULL DEFAULT 0 CHECK(mileage>=0), status text NOT NULL CHECK(status IN ('in_stock','reserved','sold')));
+CREATE TABLE customer (customer_id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, full_name text NOT NULL, email text UNIQUE, phone text);
+CREATE TABLE sale (sale_id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, vin char(17) NOT NULL UNIQUE REFERENCES vehicle(vin), customer_id bigint NOT NULL REFERENCES customer(customer_id), sold_at timestamptz NOT NULL DEFAULT now(), sale_price numeric(12,2) NOT NULL CHECK(sale_price>0));
